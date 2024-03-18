@@ -1,6 +1,6 @@
 3월 18일
 
-문제 출처 : https://www.acmicpc.net/problem/7576
+문제 출처 : https://www.acmicpc.net/problem/1011
 
 소요 시간 : 약 50분
 
