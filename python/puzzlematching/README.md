@@ -1,3 +1,5 @@
+# 99클럽 코테 스터디 1일차 TIL + daily 문제
+
 4월 16일
 
 문제 출처 : https://school.programmers.co.kr/learn/courses/30/lessons/84021
