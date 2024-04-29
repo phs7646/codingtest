@@ -1,29 +1,26 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <queue>
 
 using namespace std;
 
 vector<int> solution(vector<int> prices) {
     int N = prices.size();
     vector<int> answer(N,0);
-    vector<int> alive;
+    priority_queue<pair<int,int>> pq; //{price, index}
     for(int i = 0;i < N;i++) {
-        for(auto it = alive.begin(); it != alive.end();) {
-            answer[*it]++;
-            if(prices[*it] <= prices[i]) {
-                //cout << *it << " alive!\n";
-                //still alive
-                it++;
-            } else {
-                //cout << *it << " died\n";
-                //die
-                it = alive.erase(it);
-            }
+        while(!pq.empty() && pq.top().first > prices[i]) {
+            int index = pq.top().second;
+            pq.pop();
+            answer[index] = i-index;
         }
-        alive.push_back(i);
-        //cout << i << " pushed\n";
+        pq.push({prices[i],i});
     }
-    
+    while(!pq.empty()) {
+        answer[pq.top().second] = N-pq.top().second-1;
+        pq.pop();
+    }
     return answer;
 }
