@@ -13,8 +13,9 @@ for _ in range(N) :
         m_a = a
         m_b = b
 
-
 possible_max = (C + b - 1) // b * a # 배열의 길이는 최고 효율인 도시에서 모두 모집할 때 드는 비용
+
+
 dp = [0] * (possible_max+ 1) # dp[i] : i원을 사용했을 때 얻을 수 있는 최대 고객 수
 dp[possible_max] = C
 for cost in range(0,possible_max+1) :
