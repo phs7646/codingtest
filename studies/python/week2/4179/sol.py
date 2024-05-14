@@ -3,7 +3,6 @@ import queue
 R, C = map(int,input().split())
 
 board = [[0]*C for _ in range(R)]
-
 moves = [[-1,0], [1,0] , [0,-1], [0,1]]
 
 start = (0,0)
