@@ -2,24 +2,17 @@
 
 # CPP
 
-문제 선정 기준 : 백준 골드 난이도 필터로 검색하여 순서대로
+## 백준
+CPP 스터디 진행 (화/목)
+매 회차당 실버 4 ~ 골드 2 사이 4문제 풀이 (태그 미열람)
 
-(https://www.acmicpc.net/problemset?sort=no_asc&tier=11%2C12%2C13%2C14%2C15)
+## SWEA
+B형 대비 D5, D6 문제 풀이
 
-문제 선정 기준 2 : 코테 광탈 문제 모음집
+# JAVA
 
-(https://www.acmicpc.net/workbook/view/4357)
-
-문제 선정 기준 3 :
-
-맞힌 사람 >= 100 && 정답 비율 >= 20%
-
-문제 선정 기준 4 :
-
-solved.ac에서 Platinum 5문제 검색 후 맞힌사람 > 100
-(골드보다 플래티넘5 난이도가 더 적당한 것 같다)
-
+SSAFY에서 java 알고리즘 강의 진행. 추천 문제 풀이.
 
 # Python
 
-99클럽 스터디 오늘의 문제
+x
