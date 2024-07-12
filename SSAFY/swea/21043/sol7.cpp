@@ -58,9 +58,11 @@ int main() {
         for(int q = 0;q < Q;q++) {
             long long v; long long c;
             cin >> v >> c;
-            long long answer = 0;
+            long long answer = w[D];
             int k = (D/v)-1;
             vector<long long> values = calculateFuncValues(k,c);
+            for(long long val : values) cout << val << " ";
+            cout << endl;
             for(int i = 0;i <= k;i++) {
                 if(i % 2 == 0) {
                     answer = modSub(answer,modMul(values[i],w[D-(k+1)*c]));
@@ -74,6 +76,7 @@ int main() {
     }
     return 0;
 }
+// func 이상함 다시짜야함
 // 식 다시 세우고 식의 각 단계에서 mod된 값과 그렇지 않은 값 확실하게 분리하기
 
 /*
