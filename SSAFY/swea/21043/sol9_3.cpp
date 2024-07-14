@@ -3,27 +3,7 @@
 #include<algorithm>
 const int mod = 1000000007;
 using namespace std;
-vector<long long> calculateFuncValues(int k, int n) {
-    std::vector<std::vector<long long>> dp(k + 1, std::vector<long long>(n + 1, 0));
-    for (int i = 1; i <= n; ++i) {
-        dp[0][i] = 1;
-    }
-    for(int i = 1;i <= k;i++) {
-        dp[i][1] = 1;
-        for(int j = 2;j <= n;j++) {
-            dp[i][j] = (dp[i][j-1] + dp[i-1][j]) % mod;
-        }
-    }
-    std::vector<long long> results(k+1);
-    for(int i = 0; i <= k; i++) {
-        results[i] = dp[i][n];
-    }
 
-    return results;
-}
-long long modAccum(long long n) {
-    return (n * ((n+1)%mod) / 2 )% mod;
-}
 long long modMul(long long a, long long b) {
     return a*b % mod;
 }
@@ -33,10 +13,41 @@ long long modAdd(long long a,long long b) {
 long long modSub(long long a,long long b) {
     return (a+mod-b) % mod;
 }
+std::vector<long long> computeFuncs(int k, int n) {
+    std::vector<long long> results(k+1);
+    int inter[2001];
+    results[0] = 1;
+    results[1] = n;
+    inter[0] = n;
+    int capa = 1;
+    for (int i = 2; i <= k; ++i) {
+        inter[capa] = n+i-1;
+        capa++;
+        //i를 나눠야함
+        for(int j = 0;j < capa;j++) {
+            if(inter[j] % i  == 0) {
+                inter[j] /= i;
+                if(inter[j] == 1) {
+                    inter[j] = inter[capa-1];
+                    capa--;
+                }
+                break;
+            }
+        }
+        long long t = 1;
+        for(int j = 0;j < capa;j++) {
+            t = modMul(t,inter[j]);
+        }
+        results[i] = t;
+    }
+    return results;
+}
+
 
 int main() {
     cin.tie(nullptr);
     ios_base::sync_with_stdio(false);
+    long long inter[2001];
     int T;cin >> T;
     for(int t = 1;t <= T;t++) {
         int D; cin >> D;
@@ -47,14 +58,36 @@ int main() {
         for(int q = 0;q < Q;q++) {
             long long v; long long c;
             cin >> v >> c;
-            long long answer = 0;
+            long long answer = modSub(w[D],modMul(c,w[D-v]));
             int k = D/v;
-            vector<long long> values = calculateFuncValues(k,c);
-            for(int i = 0;i <= k;i++) {
+            inter[0] = c;
+            int cappa = 1;
+            for(int i = 2;i <= k;i++) {
+                //c+i-1 을 곱하고, i를 나누면 됨.
+                bool muled = false;
+                for(int j = 0;j < cappa;j++) {
+                    if(inter[j] < 100*mod) {
+                        inter[j] *= (c+i-1);
+                        muled = true;
+                        break;
+                    }
+                }
+                if(!muled) {
+                    inter[cappa] = c+i-1;
+                    cappa++;
+                }
+                //나누기
+                for(int j = 0;j < cappa;j++) {
+                    if(inter[j] % mod == 0) {
+                        inter[j] /= i;
+                    }
+                }
+                long long value = 1;
+                for(int j = 0;j < cappa;j++) value = modMul(value,inter[j]%mod);
                 if(i % 2 == 1) {
-                    answer = modSub(answer,modMul(values[i],w[D-i*v]));
+                    answer = modSub(answer,modMul(value,w[D-i*v]));
                 } else {
-                    answer = modAdd(answer,modMul(values[i],w[D-i*v]));
+                    answer = modAdd(answer,modMul(value,w[D-i*v]));
                 }
             }
             cout << answer << " ";

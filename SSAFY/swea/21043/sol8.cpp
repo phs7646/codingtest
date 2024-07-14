@@ -3,24 +3,34 @@
 #include<algorithm>
 const int mod = 1000000007;
 using namespace std;
-vector<long long> calculateFuncValues(int k, int n) {
-    std::vector<std::vector<long long>> dp(k + 1, std::vector<long long>(n + 1, 0));
-    for (int i = 1; i <= n; ++i) {
-        dp[0][i] = 1;
-    }
-    for(int i = 1;i <= k;i++) {
-        dp[i][1] = 1;
-        for(int j = 2;j <= n;j++) {
-            dp[i][j] = (dp[i][j-1] + dp[i-1][j]) % mod;
-        }
-    }
-    std::vector<long long> results(k+1);
-    for(int i = 0; i <= k; i++) {
-        results[i] = dp[i][n];
-    }
+long long func1(int n) {
+    return (n * (n + 1) / 2)%mod;
+}
 
+long long func2(int n) {
+    return (n * (n + 1) * (n + 2) / 6)%mod;
+}
+
+std::vector<long long> computeFuncs(int k, int n) {
+    std::vector<long long> results;
+    results.push_back(func1(n));
+    if (k == 1) return results;
+
+    results.push_back(func2(n));
+    if (k == 2) return results;
+
+    std::vector<long long> previous = results;
+    for (int j = 3; j <= k; ++j) {
+        long long sum = 0;
+        for (int i = 1; i <= n; ++i) {
+            sum += previous[i - 1];
+            previous.push_back(sum);
+        }
+        results.push_back(sum);
+    }
     return results;
 }
+
 long long modAccum(long long n) {
     return (n * ((n+1)%mod) / 2 )% mod;
 }
@@ -47,14 +57,14 @@ int main() {
         for(int q = 0;q < Q;q++) {
             long long v; long long c;
             cin >> v >> c;
-            long long answer = 0;
+            long long answer = modSub(w[D],modMul(c,w[D-v]));
             int k = D/v;
-            vector<long long> values = calculateFuncValues(k,c);
-            for(int i = 0;i <= k;i++) {
+            vector<long long> values = computeFuncs(k,c);
+            for(int i = 2;i <= k;i++) {
                 if(i % 2 == 1) {
-                    answer = modSub(answer,modMul(values[i],w[D-i*v]));
+                    answer = modSub(answer,modMul(values[i-2],w[D-i*v]));
                 } else {
-                    answer = modAdd(answer,modMul(values[i],w[D-i*v]));
+                    answer = modAdd(answer,modMul(values[i-2],w[D-i*v]));
                 }
             }
             cout << answer << " ";
