@@ -4,6 +4,47 @@
 #include<algorithm>
 #include<cassert>
 using namespace std;
+
+string addLongLongStrings(long long a, long long b, long long c) {
+    // Convert the long long integers to strings
+    string sa = to_string(a);
+    string sb = to_string(b);
+    string sc = to_string(c);
+
+    // Reverse the strings to simplify addition from least significant digit
+    reverse(sa.begin(), sa.end());
+    reverse(sb.begin(), sb.end());
+    reverse(sc.begin(), sc.end());
+
+    // Find the maximum length of the strings
+    int maxLength = max({sa.length(), sb.length(), sc.length()});
+
+    // Initialize variables for the sum and carry
+    string sum;
+    int carry = 0;
+
+    // Add the strings from right to left
+    for (int i = 0; i < maxLength; ++i) {
+        int digitA = i < sa.length() ? sa[i] - '0' : 0;
+        int digitB = i < sb.length() ? sb[i] - '0' : 0;
+        int digitC = i < sc.length() ? sc[i] - '0' : 0;
+
+        int digitSum = digitA + digitB + digitC + carry;
+        carry = digitSum / 10;
+        sum += (digitSum % 10) + '0';
+    }
+
+    // If there is a remaining carry, add it to the sum
+    if (carry > 0) {
+        sum += carry + '0';
+    }
+
+    // Reverse the sum to get the correct order
+    reverse(sum.begin(), sum.end());
+
+    return sum;
+}
+
 long long calcul(int A, int numA) {
     if(numA == 0) return 0;
     if(numA == 1) return 0;
@@ -68,8 +109,8 @@ int main() {
         long long last = A + left;
         long long totB = B * numB;
         long long totA = A * k;
-        long long answer = calcul(A,k) + calcul(B,numB) + totA * totB +  last * totA + last * totB;
-        cout << '#' << t << " " << answer << "\n";
+        //long long answer = calcul(A,k) + calcul(B,numB) + totA * totB +  last * totA + last * totB;
+        cout << '#' << t << " " << addLongLongStrings(calcul(A,k),calcul(B,numB),totA*totB+last*totA+last*totB) << "\n";
     }
 
     return 0;
