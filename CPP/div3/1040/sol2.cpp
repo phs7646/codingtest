@@ -4,9 +4,9 @@
 
 using namespace std;
 
-long long N;
+unsigned long long N;
 int K;
-long long dp[20][1024];
+unsigned long long dp[20][1024];
 int numUsed[1024];
 //dp [l][bit] : 길이 l에 bit상태를 가진 수의 갯수
 
@@ -19,14 +19,14 @@ int calcnumUsed(int bit) {
     }
     return ret;
 }
-long long brute_numCase(int N,int bit) {
-    long long ret = 0;
+unsigned long long brute_numCase(int N,int bit) {
+    unsigned long long ret = 0;
     //길이가 N인 수 중 bit를 만족하는 수의 갯수 세기
     //1...0부터 10^N-1
-    long long end = 1;
+    unsigned long long end = 1;
     for(int i = 0;i < N;i++) end *= 10;
-    for(long long start = 0;start < end;start++) {
-        long long t = start;
+    for(unsigned long long start = 0;start < end;start++) {
+        unsigned long long t = start;
         int check = 0;
         while(t > 0) {
             int digit = t % 10;
@@ -40,7 +40,7 @@ long long brute_numCase(int N,int bit) {
     }
     return ret;
 }
-long long numCase(int N,int bit) {
+unsigned long long numCase(int N,int bit) {
     //cout << "numCase call " << N << " " << bit << endl;
     //길이 N, bit상태를 가진 수 의 갯수
     //0을 사용해도됨
@@ -53,7 +53,7 @@ long long numCase(int N,int bit) {
     //cout << N << " " << bit << endl;
     if(dp[N][bit] != -1) return dp[N][bit];
 
-    long long ret = 0;
+    unsigned long long ret = 0;
     //맨 첫자리 digit을 정한다
     for(int digit = 0;digit <= 9;digit++) {
         if(!(bit & (1<<digit))) continue; //해당 digit을 소유하지 않음
@@ -68,7 +68,7 @@ int main() {
     cin >> N >> K;
     vector<int> Nlist;
     int Nlen = 0;
-    long long _N = N;
+    unsigned long long _N = N;
     while(_N > 0) {
         Nlist.push_back(_N%10);
         Nlen++;
@@ -80,10 +80,10 @@ int main() {
         numUsed[bit] = calcnumUsed(bit);
     }
     //dp initialize
-    fill(&dp[0][0], &dp[0][0] + sizeof(dp) / sizeof(long long), -1);
+    fill(&dp[0][0], &dp[0][0] + sizeof(dp) / sizeof(unsigned long long), -1);
     int max_bit = 1024;
     //N보다작고, 정확히 k개로 이루어진 수의 갯수 세기
-    long long count = 0;
+    unsigned long long count = 0;
     for(int index = 0;index < Nlen;index++) {
         //index digit을 정함
         int startdigit = 0;
@@ -103,8 +103,8 @@ int main() {
     }
     //cout << "count is " <<  count << endl;
     //k개로 이루어진 count+1번째 수 찾기
-    long long accum = 0;
-    long long target = count+1;
+    unsigned long long accum = 0;
+    unsigned long long target = count+1;
     while(true) {
         //cout << "Loop start" << endl;
         //Nlen부터 찾기
@@ -114,7 +114,7 @@ int main() {
             if(index == 0) fdigit = 1;
             for(;fdigit<=9;fdigit++) {
                 //fdigit을 골랐을 때 갯수
-                long long cur = 0;
+                unsigned long long cur = 0;
                 int offset = 1<<fdigit;
                 for(int d : history) offset |= 1<<d;
                 for(int bit = 0;bit < 1024;bit++) {
@@ -138,7 +138,7 @@ int main() {
         }
         if(history.size() < Nlen) {
             Nlen++;
-            accum = 0;
+            //accum = 0;
             history.resize(0);
         } else {
             //history 출력하기
