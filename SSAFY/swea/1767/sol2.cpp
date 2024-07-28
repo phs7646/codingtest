@@ -5,15 +5,15 @@ using namespace std;
 int map[12][12];
 pair<int,int> corePos[12];
 bool corePossib[12][4]; //상우하좌 순서로 연결이 가능한지 체크
-bool used[12];
+bool connected[12];
 int numCore;
 int N;
 int answer;
-int answer_num;
+int answer_connected;
 int evaluatePossib(int core) {
     int ret = 4;
     //core의 possib 계산하기
-    //상하좌우 순으로 가능한지 체크하기
+    //상우하좌 순으로 가능한지 체크하기
     int y = corePos[core].first;
     int x = corePos[core].second;
     //상. 윗줄에 아무것도 없어야함
@@ -38,54 +38,41 @@ int evaluatePossib(int core) {
         break;
     }
     //좌. 왼쪽에 아무것도 없어야함
-    for(int k = 0;k < x;k++) if(map[k][x] > 0) {
-        corePossib[core][2] = false;
+    corePossib[core][3] = true;
+    for(int k = 0;k < x;k++) if(map[y][k] > 0) {
+        corePossib[core][3] = false;
         ret--;
         break;
     }
     return ret;
 }
 
-void backtrack() {
-    //possib이 0인 케이스가 있으면 바로 리턴
-    //possib이 가장 작은 케이스를 타겟으로 설정. 타겟의 가능한 방향 dfs
-    int target = -1;
-    int targetCount = 5;
-    for(int i = 0;i < numCore;i++) {
-        if(used[i]) continue;
-        int curCount = evaluatePossib(i);
-        if(curCount == 0) continue;
-        if(curCount < targetCount) {
-            target = i;
-            targetCount = curCount;
-        }
-    }
-    if(target == -1) {
-        //끝났다...
-        int curNum = 0;
-        for(int i = 0;i < numCore;i++) if(used[i]) curNum++;
-        if(curNum < answer_num) return;
+void backtrack(int core) {
+    //탈출조건
+    if(core == numCore) {
+        //end
+        int numConnected = 0;
+        for(int i = 0;i < numCore;i++) if(connected[i]) numConnected++;
         int cur = 0;
         for(int i = 0;i < N;i++) for(int j = 0;j < N;j++) if(map[i][j] == 2) cur++;
-        if(curNum > answer_num || cur < answer) {
+        if(numConnected > answer_connected || (numConnected == answer_connected && cur < answer)) {
             answer = cur;
-            answer_num = curNum;
-            cout << "Update Occured! to " << answer << endl;
-            for(int i = 0;i < N;i++) {
-                for(int j = 0;j < N;j++) {
-                    cout << map[i][j] << " ";
-                }
-                cout << endl;
-            }
+            answer_connected = numConnected;
         }
         return;
     }
-    //타겟 설정 완료
-    used[target] = true;
-    int y = corePos[target].first;
-    int x = corePos[target].second;
+    //남은거 다연결해도 모자란지 체크
+    int maxConnected = numCore;
+    for(int i = 0;i < core;i++) if(!connected[i]) maxConnected--;
+    if(maxConnected < answer_connected) return;
+    //core의 상태를 정하자
+    int y = corePos[core].first;
+    int x = corePos[core].second;
+    evaluatePossib(core);
+    connected[core] = true;
     for(int dir = 0;dir < 4;dir++) {
-        if(!corePossib[target][dir]) continue;
+        if(!corePossib[core][dir]) continue;
+        //cout << core << "를 " << dir << "방향으로 결정! \n";
         //dir방향으로 occupy
         if(dir == 0) {
             for(int k = 0;k < y;k++) map[k][x] = 2;
@@ -96,9 +83,7 @@ void backtrack() {
         } else {
             for(int k = 0;k < x;k++) map[y][k] = 2;
         }
-        //dfs
-        backtrack();
-
+        backtrack(core+1);
         //dir방향으로 unoccupy
         if(dir == 0) {
             for(int k = 0;k < y;k++) map[k][x] = 0;
@@ -110,15 +95,20 @@ void backtrack() {
             for(int k = 0;k < x;k++) map[y][k] = 0;
         }
     }
+    connected[core] = false;
+    backtrack(core+1);
+
 }
 
 int main() {
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
     int T; cin >> T;
     for(int t = 1;t <= T;t++) {
         cin >> N;
         numCore = 0;
         answer = 2100000000;
-        answer_num = 0;
+        answer_connected = 0;
         // initialize map
         for(int i = 0;i < N;i++) for(int j = 0;j < N;j++) {
             cin >> map[i][j];
@@ -128,12 +118,11 @@ int main() {
             }
         }
         //initialize used
-        fill(used,used+12,false);
+        fill(connected,connected+12,false);
         //backtrack start
-        backtrack();
+        backtrack(0);
         //print
-        cout << answer << endl;
-        cout << answer_num << endl;
+        cout << "#" << t << " " << answer << "\n";
     }
 
     return 0;

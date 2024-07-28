@@ -36,22 +36,29 @@ int main() {
             cout << '#' << t << " " << -1 << "\n";
             continue;
         }
-        cout << '#' << t << " " << -1 << "\n";
-        continue;
-        long long answer = LLONG_MAX;
 
-        int maxB = N / B;
+        //로직
+        long long answer = 0;
 
-        for (int b = maxB; b >= 0; b--) {
-            int remain = N - b * B;
-            //remain을 만들 수 있는가..??
+        long long numB = N / B;
+        int remain = N % B;
+        int diff = B-A;
+        long long numA = 0;
+        if(A < remain) {
+            numA = (A-remain)/diff;
+            if((A-remain)%diff != 0) numA++;
+            numB -= numA;
+            remain += numA * diff;
         }
-
-        if (answer == LLONG_MAX) {
-            cout << '#' << t << " " << -1 << "\n";
+        if(numB >= 0) {
+            //B가 numB개 A가 numA개 + remain
+            if(numB > 0) answer += B * (numB*remain + (numB-1)*numB/2 * B);
+            if(numA > 0) answer += A * (numA*(remain+numB*B) + (numA-1)*numA/2 * A);
         } else {
-            cout << '#' << t << " " << answer << "\n";
+            answer = -1;
         }
+
+        cout << '#' << t << " " << answer << "\n";
     }
 
     return 0;
