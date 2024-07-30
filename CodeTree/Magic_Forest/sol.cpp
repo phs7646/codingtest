@@ -13,7 +13,7 @@ typedef struct {
 } Golem;
 Golem golems[1000];
 bool visited[1000];
-int window = 0;
+int window;
 pair<int,int> checkDown[] = {{1,1},{1,-1},{2,0}};
 pair<int,int> checkLeft[] = {{-1,-1},{0,-2},{1,-1},{1,-2},{2,-1}};
 pair<int,int> checkRight[] = {{-1,1},{0,2},{1,1},{1,2},{2,1}};
@@ -28,6 +28,7 @@ bool isValid(int y,int x) {
 int main() {
     cin >> R >> C >> K;
     //map initialize
+    window = 0;
     for(int i = 1; i <= R+3;i++) for(int j = 1;j <= C;j++) map[i][j] = -1; 
     int answer = 0;
     for(int k = 0;k < K;k++) {
@@ -88,7 +89,7 @@ int main() {
             break;//더이상 이동 불가능
         }
         //이동 완료.
-        if(golems[k].y <= 3) {
+        if(golems[k].y <= 4) {
             //꽉찼다..! 
             for(int i = 1;i <= R+3;i++) {
                 for(int j = 1;j <= C;j++) {
@@ -103,7 +104,7 @@ int main() {
         for(int i = 0;i < 5;i++) {
             map[golems[k].y + occupy[i].first][golems[k].x + occupy[i].second] = k;
         }
-        if(debug) cout << "Golem " << k << " end : " << golems[k].y << " " << golems[k].x << endl;
+        if(debug) cout << "Golem " << k << " end : " << golems[k].y << " " << golems[k].x << " " << golems[k].d << endl;
         if(debug) {
             for(int i = 1;i <= R+3;i++) {
                 for(int j = 1;j <= C;j++) {
@@ -123,8 +124,8 @@ int main() {
             pair<int,int> exit = {golems[g].y,golems[g].x};
             if(golems[g].d == 0) exit.first--;
             else if(golems[g].d == 1) exit.second++;
-            else if(golems[g].d == 2) exit.second--;
-            else exit.first++;
+            else if(golems[g].d == 2) exit.first++;
+            else exit.second--;
             for(int m = 0;m < 4;m++) {
                 int _y = exit.first + moves[m].first;
                 int _x = exit.second + moves[m].second;
@@ -137,6 +138,7 @@ int main() {
                 }
             }
         }
+        if(fairyend < 3) return -1;
         if(debug) cout << (fairyend-3) << " 점을 얻었다!\n";
         //update
         answer += fairyend - 3;
