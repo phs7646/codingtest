@@ -4,6 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/*
+ * 메모리 : 19,692
+ * 실행 시간 : 113
+ * 
+ * 오른쪽부터시작해서 N-1길이씩 4방향으로 움직인다
+ * 그 이후 N-3길이로 반복하고
+ * ....
+ */
+
 public class Solution_1954_달팽이숫자_박한성 {
 
 	static int arr[][] = new int[10][10];
